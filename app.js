@@ -85,14 +85,17 @@ require("./config")(app);
 
 const session = require("express-session");
 
+
+app.set("trust proxy", 1); //this is a Heroku requirement
 app.use(
   session({
     resave: true,
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET,
     cookie: {
-      sameSite: true, //frontend backend both run on localhost
-      httpOnly: true, //we are not using https
+      sameSite: "none", //frontend backend both run on localhost, changes as we deploy
+      httpOnly: false, //we are not using https, changes to false as we deploy
+      secure: true, //this one we added when we deploy
       maxAge: 60000, //session time
     },
     rolling: true,
